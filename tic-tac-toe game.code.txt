@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color:green; 
+       }
+
+        h1 {
+            color:blue;
+        }
+
+        #menu {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #menu label {
+            margin-right: 20px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ddd;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color:yellow; 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        .cell:hover {
+            background-color:pink;
+        }
+
+        #status {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        #message {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #reset-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color:red; 
+            color: #fff; 
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #reset-button:hover {
+            background-color:grey; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic-Tac-Toe Game</h1>
+    <div id="menu">
+        <label>
+            <input type="radio" name="mode" value="single" onchange="changeMode('single')" checked>
+            Single Player
+        </label>
+        <label>
+            <input type="radio" name="mode" value="two" onchange="changeMode('two')">
+            Two Players
+        </label>
+        <button id="reset-button" onclick="resetGame()">Reset Game</button>
+    </div>
+    <div id="status">Current Player: X</div>
+    <div id="board"></div>
+    <div id="message"></div>
+
+    <script>
+        const board = document.getElementById('board');
+        const status = document.getElementById('status');
+        const message = document.getElementById('message');
+        const resetButton = document.getElementById('reset-button');
+        const menu = document.getElementById('menu');
+        const cells = Array.from({ length: 9 });
+
+        let currentPlayer = 'X';
+        let winner = null;
+        let moves = 0;
+        let gameMode = 'single';
+
+        
+        cells.forEach((cell, index) => {
+            const cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+            cellElement.dataset.index = index;
+            cellElement.addEventListener('click', () => handleCellClick(index));
+            board.appendChild(cellElement);
+            cells[index] = cellElement;
+        });
+
+     
+        function handleCellClick(index) {
+            if (!cells[index].textContent && !winner) {
+                cells[index].textContent = currentPlayer;
+                moves++;
+                checkForWinner();
+                togglePlayer();
+                updateStatus();
+
+                if (gameMode === 'single' && currentPlayer === 'O' && !winner) {
+                    // AI makes a move in single-player mode
+                    makeAIMove();
+                }
+            }
+        }
+
+        // Function to toggle player (X or O)
+        function togglePlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        // Function to check for a winner or draw
+        function checkForWinner() {
+            const winningCombos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+
+            for (const combo of winningCombos) {
+                const [a, b, c] = combo;
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    cells[a].style.backgroundColor = cells[b].style.backgroundColor = cells[c].style.backgroundColor = '#c3e6cb'; // Winning cells color
+                    winner = cells[a].textContent;
+                    displayResult();
+                    return;
+                }
+            }
+
+            if (moves === 9) {
+                displayResult(true); // It's a draw
+            }
+        }
+
+      
+        function updateStatus() {
+            status.textContent = `Current Player: ${currentPlayer}`;
+        }
+
+        // Function to display the result (winner or draw)
+        function displayResult(draw = false) {
+            if (draw) {
+                message.textContent = 'It\'s a Draw!';
+            } else {
+                message.textContent = `Player ${winner} Wins!`;
+            }
+            resetButton.style.display = 'block';
+        }
+
+      
+        function resetGame() {
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.style.backgroundColor = '';
+            });
+
+            currentPlayer = 'X';
+            winner = null;
+            moves = 0;
+
+            message.textContent = '';
+            resetButton.style.display = 'none';
+
+            updateStatus();
+
+            if (gameMode === 'single' && currentPlayer === 'O') {
+                // AI makes a move in single-player mode
+                makeAIMove();
+            }
+        }
+      
+        function changeMode(mode) {
+            gameMode = mode;
+            resetGame();
+            menu.style.display = 'none';
+
+            if (gameMode === 'single' && currentPlayer === 'O') {
+                // AI makes a move in single-player mode
+                makeAIMove();
+            }
+        }
+
+    
+        function makeAIMove() {
+            const availableCells = cells.filter(cell => !cell.textContent);
+            if (availableCells.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableCells.length);
+                const selectedCell = availableCells[randomIndex];
+                const index = parseInt(selectedCell.dataset.index);
+                setTimeout(() => handleCellClick(index), 500);
+            }
+        }
+    </script>
+</body>
+</html>
+	
