@@ -1,0 +1,100 @@
+*{
+    padding: 0%;
+    margin: auto;
+    box-sizing: border-box;
+}
+nav{
+    background-color: black;
+    height: 110px;
+    display: flex;
+
+}
+/* nav{
+    position: fixed;
+    top: 0;
+    width: 100%;
+} */
+.left{
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+.left-right{
+    display: flex;
+    width: 300px;
+    justify-content: space-evenly;
+    
+    list-style: none;
+}
+.left-left img{
+    margin-left: -110px;
+}
+
+.left-right a{
+    text-decoration: none;
+    color: white;
+    font-size: large;
+}
+.right{
+    display: flex;
+    width: 500px;
+    justify-content: space-evenly;
+}
+.right-left input{
+    width: 250px;
+    height: 30px;
+    border-radius: 20px;
+}
+.right-right img{
+    background-color: black;
+}
+.content{
+    width: 200px;
+    height: 350px;
+    color: white;
+    text-align: center;
+    padding-top: 110px;
+}
+.first{
+    height: 400px;
+    background-color: black;
+    background-image: url("./photo/thatha\ tharaaru.jpeg");
+    background-position: center;
+    background-size:cover;
+    background-repeat: no-repeat;
+}
+.first-top{
+    padding-top: 31px;
+    display: flex;
+}
+.photo{
+    background-color: black;
+    width: 200px;
+    height: 350px;
+    color: white;
+}
+.photo img{
+    width: 100%;
+    height: 74%;
+}
+.photo h1,p{
+    padding-left: 10px;
+    margin-top: 10px;
+}
+.second{
+    height: 400px;
+    background-color: black;
+    background-image: url("./photo/maankutty.jpeg");
+    background-position: center;
+    background-size:cover;
+    background-repeat: no-repeat;
+    
+}
+.third{
+    height: 400px;
+    background-color: black;
+    background-image: url("./photo/hunt.jpeg");
+    background-position: center;
+    background-size:cover;
+    background-repeat: no-repeat;   
+}
